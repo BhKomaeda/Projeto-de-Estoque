@@ -1,7 +1,5 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using ProjetoEstoque.Models;
 using ProjetoEstoque.Services;
-using ProjetoEstoque.Models;
 
 namespace ProjetoEstoque.Forms
 {
@@ -17,14 +15,20 @@ namespace ProjetoEstoque.Forms
 
         private void CarregarProdutos()
         {
-            var lista = service.Listar();
-            dataGridView1.DataSource = null;
-            dataGridView1.DataSource = lista;
+            try
+            {
+                var lista = service.Listar();
+                dataGridView1.DataSource = null;
+                dataGridView1.DataSource = lista;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao carregar produtos: " + ex.Message);
+            }
         }
 
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
-            // Validações simples
             if (string.IsNullOrWhiteSpace(txtNome.Text))
             {
                 MessageBox.Show("Preencha o nome.");
@@ -43,19 +47,26 @@ namespace ProjetoEstoque.Forms
                 return;
             }
 
-            var produto = new Produto
+            try
             {
-                Nome = txtNome.Text.Trim(),
-                Preco = preco,
-                Quantidade = qtd
-            };
+                var produto = new Produto
+                {
+                    Nome = txtNome.Text.Trim(),
+                    Preco = preco,
+                    Quantidade = qtd
+                };
 
-            service.Adicionar(produto);
-            CarregarProdutos();
-
-            txtNome.Clear();
-            txtPreco.Clear();
-            txtQuantidade.Clear();
+                service.Adicionar(produto);
+                CarregarProdutos();
+                txtNome.Clear();
+                txtPreco.Clear();
+                txtQuantidade.Clear();
+                MessageBox.Show("Produto cadastrado com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao cadastrar produto: " + ex.Message);
+            }
         }
 
         private void btnIncrementar_Click(object sender, EventArgs e)
@@ -66,11 +77,19 @@ namespace ProjetoEstoque.Forms
                 return;
             }
 
-            var selected = dataGridView1.SelectedRows[0].DataBoundItem as Produto;
-            if (selected == null) return;
-
-            service.Incrementar(selected.Id, 1);
-            CarregarProdutos();
+            try
+            {
+                var selected = dataGridView1.SelectedRows[0].DataBoundItem as Produto;
+                if (selected != null)
+                {
+                    service.Incrementar(selected.Id, 1);
+                    CarregarProdutos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao incrementar: " + ex.Message);
+            }
         }
 
         private void btnDecrementar_Click(object sender, EventArgs e)
@@ -81,11 +100,19 @@ namespace ProjetoEstoque.Forms
                 return;
             }
 
-            var selected = dataGridView1.SelectedRows[0].DataBoundItem as Produto;
-            if (selected == null) return;
-
-            service.Decrementar(selected.Id, 1);
-            CarregarProdutos();
+            try
+            {
+                var selected = dataGridView1.SelectedRows[0].DataBoundItem as Produto;
+                if (selected != null)
+                {
+                    service.Decrementar(selected.Id, 1);
+                    CarregarProdutos();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao decrementar: " + ex.Message);
+            }
         }
     }
 }

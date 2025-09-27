@@ -1,7 +1,8 @@
+using System;
+using System.Windows.Forms;
 using ProjetoEstoque.Forms;
 
-
-namespace ControleEstoque
+namespace ProjetoEstoque
 {
     internal static class Program
     {
